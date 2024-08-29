@@ -2,12 +2,16 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.generic.list import ListView
+from django.views.generic.edit import CreateView
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CriarForm
 from .models import Task
 from datetime import datetime
 
-class TasksView(ListView):
+class TasksView(LoginRequiredMixin, ListView):
     model=Task
+    paginate_by=10
 
     def get_queryset(self, *args, **kwargs): 
         qs = super(TasksView, self).get_queryset(*args, **kwargs) 
@@ -16,7 +20,13 @@ class TasksView(ListView):
 
 def index(request):
 
-    return render(request, 'index.html', )
+    return render(request, 'index.html')
+
+class TaskCreate(LoginRequiredMixin,CreateView):
+    model=Task
+    fields=['title', 'description', 'due_date']
+    template_name='tasks/form.html'
+    success_url=reverse_lazy('index')
 
 @login_required
 def criar(request):
@@ -51,15 +61,26 @@ def editar(request, id):
         form = CriarForm(request.POST, instance=task)
         if form.is_valid():
             try:
-                task.title = form.cleaned_data["title"]
-                task.description = form.cleaned_data["description"]
-                task.due_date = form.cleaned_data["due_date"]
-                task.save()
+                form.save()
                 messages.success(request, "Tarefa alterada com sucesso!")
                 return redirect(visualizar,id=task.id)
             except Exception as error:
-                messages.error(request, f"Erro ao alterar tarefa!\n"+str(error))
-    return render(request, 'criar.html', {"tasks": task})
+                messages.error(request, f"Erro ao alterar tarefa!\n{str(error)}")
+    form = CriarForm(instance=task)
+    return render(request, 'criar.html', {"tasks": task, "form": form, "messages": messages})
+
+@login_required
+def concluir(request, id):
+    try:
+        task = Task.objects.get(id=id)
+        if task is not None:
+            task.completed = True
+            task.save()
+            messages.success(request, "Tarefa concluida com sucesso!")
+    except Exception as error:
+        messages.error(request, f"Tarefa não pode ser concluida.\n{str(error)}")
+    return redirect("index")
+
 
 @login_required
 def excluir(request, id):
@@ -69,6 +90,6 @@ def excluir(request, id):
             task.delete()
             messages.success(request, "Tarefa excluida com sucesso!")
         except Exception as error:
-            messages.error(request, f"Erro ao excluir a tarefa!\n"+str(error))
+            messages.error(request, "Erro ao excluir a tarefa!\n"+str(error))
 
-    return redirect(index)
+    return redirect("index")

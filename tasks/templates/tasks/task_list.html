@@ -1,20 +1,91 @@
-
 {% extends "base.html" %}
 
+{% block title %}
+Lista de tarefas
+{% endblock title %}
     
 {% block content %}
-<ul> 
-  <!-- Iterate over object_list -->
-  {% for object in object_list %} 
-  <!-- Display Objects -->
-  <li>{{ object.title }}</li> 
-  <li>{{ object.description }}</li> 
- 
-  <hr/> 
-  <!-- If object_list is empty  -->
-  {% empty %} 
-  <li>No objects yet.</li> 
-  {% endfor %} 
-</ul>
+<div class="d-flex justify-content-between">
+  <h3>Suas tarefas</h3>
+  <a href="{% url 'create' %}" class="btn btn-success">Criar nova tarefa</a>
+  
+</div>
+<hr>
+  
+  <div class="hero-unit">
+    {% include "messages.html" %}
+  </div>
+  <div class="table-responsive">
+  
+    <table class="table table-sm table-bordered table-striped nowrap" id="table-list">
+      <thead>
+        <tr class="table-info">
+          <th scope="col" style="width: 5%;">ID</th>
+          <th scope="col" style="width: 25%;">Título</th>
+          <th scope="col" style="width: 40%;">Descrição</th>
+          <th scope="col" style="width: 10%;">Prazo</th>
+          <th scope="col" style="width: 10%;">Finalizada</th>
+          <th scope="col" style="width: 10%;">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for object in object_list %}
+          <tr>
+            <td scope="row">{{object.pk}}</td>
+            <td>{{object.title}}</td>
+            <td>{{object.description}}</td>
+            <td>{{object.due_date}}</td>
+            <td>{{ object.completed }}</td>
+            <td>
+              <a href="{% url 'visualizar' object.pk %}" class="btn btn-light btn-sm" title="Ver detalhes">Ver</a>
+              {% if not object.completed %}
+              <a href="{% url 'concluir' object.pk %}" class="btn btn-success btn-sm" title="Concluir">Concluir</a>
+              {% endif %}
+              <a href="{% url 'editar' object.pk %}" class="btn btn-primary btn-sm" title="Editar">Editar</a>
+              <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirmModal" title="Excluir">Excluir</a>
+              {% include "confirm.html" with title=object.title id=object.pk url_name="excluir" %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5">Nenhum campo cadastrado.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  
 {% endblock content %}
+{% block scripts %}
+<script>
+  
+</script>
+{% comment %} <script>
+  $(document).ready(function()
+  {
+    $("#table-list").DataTable({
+      initComplete: function () {
+        this.api()
+            .columns()
+            .every(function () {
+                var column = this;
+                var select = $('<select><option value=""></option></select>')
+                    .appendTo($(column.footer()).empty())
+                    .on('change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex($(this).val());
+
+                        column.search(val ? '^' + val + '$' : '', true, false).draw();
+                    });
+
+                column
+                    .data()
+                    .unique()
+                    .sort()
+                    .each(function (d) {
+                        select.append('<option value="' + d + '">' + d + '</option>');
+                    });
+            });
+    },
+    });
+  });
+</script> {% endcomment %}
+{% endblock scripts %}
 

@@ -1,10 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
+<div class="d-flex justify-content-between">
+    <h3>Visualizar tarefa</h3>
+    <div class="d-inline">
+        <a href="{% url "create" %}" class="btn btn-success btn-sm">Cadastrar nova Tarefa</a>
+        <a href="{% url "editar" tasks.id %}" class="btn btn-primary btn-sm">Editar</a>
+        <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirmModal" title="Excluir">Excluir</a>
+        {% include "confirm.html" with title=tasks.title id=tasks.id url_name='excluir' %}
+    </div>
+</div>
+<hr>
+
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">{{tasks.title}}</h5>
-        <p class="card-text">{{tasks.description}}</p>
-        <p class="card-text">{{tasks.due_date}}</p>
+        <p class="card-title"><strong>Título: </strong>{{tasks.title}}</p>
+        <p class="card-text"><strong>Descrição: </strong>{{tasks.description}}</p>
+        <p class="card-text"><strong>Prazo para entrega: </strong>{{tasks.due_date}}</p>
+        <p class="card-text"><small><strong>Criado em: </strong>{{tasks.created_at}}</small></p>
+        <p class="card-text"><small><strong>Concluida: </strong>{{tasks.completed}}</small></p>
     </div>
 </div>
 {% endblock content %}
