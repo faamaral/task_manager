@@ -6,8 +6,8 @@ Lista de tarefas
     
 {% block content %}
 <div class="d-flex justify-content-between">
-  <h3>Suas tarefas</h3>
-  <a href="{% url 'create' %}" class="btn btn-success">Criar nova tarefa</a>
+  <h3>Minhas tarefas</h3>
+  <a href="{% url 'create' %}" class="btn btn-success"><i class="fa-solid fa-plus"></i> Nova tarefa</a>
   
 </div>
 <hr>
@@ -22,10 +22,10 @@ Lista de tarefas
         <tr class="table-info">
           <th scope="col" style="width: 5%;">ID</th>
           <th scope="col" style="width: 25%;">Título</th>
-          <th scope="col" style="width: 40%;">Descrição</th>
+          <th scope="col" style="width: 35%;">Descrição</th>
           <th scope="col" style="width: 10%;">Prazo</th>
           <th scope="col" style="width: 10%;">Finalizada</th>
-          <th scope="col" style="width: 10%;">Ações</th>
+          <th scope="col" style="width: 15%;" class="text-center">Ações</th>
         </tr>
       </thead>
       <tbody>
@@ -36,14 +36,17 @@ Lista de tarefas
             <td>{{object.description}}</td>
             <td>{{object.due_date}}</td>
             <td>{{ object.completed }}</td>
-            <td>
-              <a href="{% url 'visualizar' object.pk %}" class="btn btn-light btn-sm" title="Ver detalhes">Ver</a>
-              {% if not object.completed %}
-              <a href="{% url 'concluir' object.pk %}" class="btn btn-success btn-sm" title="Concluir">Concluir</a>
-              {% endif %}
-              <a href="{% url 'editar' object.pk %}" class="btn btn-primary btn-sm" title="Editar">Editar</a>
-              <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirmModal" title="Excluir">Excluir</a>
-              {% include "confirm.html" with title=object.title id=object.pk url_name="excluir" %}
+            <td class="align-middle">
+              <div class="d-flex justify-content-sm-around align-items-center align-self-center">
+                <a href="{% url 'visualizar' object.pk %}" class="btn btn-light btn-sm" title="Ver detalhes"><i class="fa-solid fa-eye"></i></a>
+                {% if not object.completed %}
+                  <a href="{% url 'concluir' object.pk %}" class="btn btn-success btn-sm" title="Concluir"><i class="fa-solid fa-check"></i></a>
+                {% endif %}
+                <a href="{% url 'editar' object.pk %}" class="btn btn-primary btn-sm" title="Editar"><i class="fa-solid fa-pencil"></i></a>
+                <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirmModal" title="Excluir"><i class="fa-solid fa-trash-can"></i></a>
+                {% include "confirm.html" with title=object.title id=object.pk url_name="excluir" %}
+              </div>
+              
             </td>
           </tr>
           {% empty %}
@@ -55,9 +58,6 @@ Lista de tarefas
   
 {% endblock content %}
 {% block scripts %}
-<script>
-  
-</script>
 {% comment %} <script>
   $(document).ready(function()
   {
