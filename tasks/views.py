@@ -14,8 +14,11 @@ class TasksView(LoginRequiredMixin, ListView):
     paginate_by=10
 
     def get_queryset(self, *args, **kwargs): 
+        completed = self.request.GET.get('completed')
         qs = super(TasksView, self).get_queryset(*args, **kwargs) 
-        qs = qs.order_by("-id") 
+        qs = qs.filter(user_id=self.request.user.id).order_by("-id") 
+        if completed:
+            qs = qs.filter(completed=completed)
         return qs
 
 def index(request):
