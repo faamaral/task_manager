@@ -2,15 +2,12 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}Cadastrar nova tarefa{% endblock title %}
+{% block title %}Nova tarefa{% endblock title %}
     
 {% block content %}
-
-
     <form action="" method="post">
         {% csrf_token %}
         {{ form|crispy }}
-        <input class="btn btn-success" type="submit" value="Cadastrar">
+        <input class="btn btn-success" type="submit" value="Salvar">
     </form>
-
 {% endblock content %}

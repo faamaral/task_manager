@@ -2,3 +2,7 @@
 .idea/
 **__pycache__
 db.sqlite3
+/postgres-data
+.env
+export_users.txt
+export_users.json

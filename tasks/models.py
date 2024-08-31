@@ -8,3 +8,8 @@ class Task(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     due_date = models.DateField(verbose_name="Data para finalização")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def complete_task(self):
+        if not self.completed:
+            self.completed=True
+            self.save()
