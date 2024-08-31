@@ -4,23 +4,24 @@
 
 Install dependencies
 
-'''sh
+```sh
     pip install -r requirements.txt
-'''
+```
 
 Run migrations
 
-'''sh
+```sh
     python manage.py migrate
-'''
+```
 
 Populate database with fake data
 
-'''sh
+```sh
     python seed.py
-'''
+```
 
 Run application
-'''sh
+
+```sh
     python manage.py runserver
-'''
+```
